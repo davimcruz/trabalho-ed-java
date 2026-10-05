@@ -1,11 +1,12 @@
 package modelos;
 
 public class Tarefa {
-    private final String titulo;
-    private Status status = Status.PENDENTE;
+    private String titulo;
+    private Status status;
 
     public Tarefa(String titulo) {
         this.titulo = titulo;
+        this.status = Status.PENDENTE;
     }
 
     public String getTitulo() {
@@ -18,10 +19,5 @@ public class Tarefa {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    @Override
-    public String toString() {
-        return titulo + " [" + status + "]";
     }
 }

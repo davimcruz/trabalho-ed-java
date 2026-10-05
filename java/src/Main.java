@@ -4,157 +4,131 @@ import modelos.Tarefa;
 
 import java.util.Scanner;
 
-// Gerenciador de tarefas: array de tarefas + enum de status + pilha de "desfazer".
+// Gerenciador de tarefas: array + enum + pilha (para desfazer o "adicionar").
 public class Main {
-    static final int CAPACIDADE = 20;
-
-    static Tarefa[] tarefas = new Tarefa[CAPACIDADE]; // Array
+    static Tarefa[] tarefas = new Tarefa[20]; // Array
     static int quantidade = 0;
-
-    // Cada mudança de status guarda a tarefa e o status anterior.
-    record Mudanca(Tarefa tarefa, Status statusAnterior) {
-    }
-
-    static Pilha<Mudanca> historico = new Pilha<>(100);
+    static Pilha historico = new Pilha(); // Pilha
     static Scanner teclado = new Scanner(System.in);
 
     public static void main(String[] args) {
-        int opcao;
-        do {
-            exibirMenu();
-            opcao = lerInteiro("Escolha: ");
-            executar(opcao);
-        } while (opcao != 0);
+        int opcao = -1;
+        while (opcao != 0) {
+            mostrarMenu();
+            System.out.print("Escolha: ");
+            opcao = Integer.parseInt(teclado.nextLine());
+
+            if (opcao == 1) {
+                adicionarTarefa();
+            } else if (opcao == 2) {
+                listarTarefas();
+            } else if (opcao == 3) {
+                buscarTarefa();
+            } else if (opcao == 4) {
+                ordenarTarefas();
+            } else if (opcao == 5) {
+                concluirTarefa();
+            } else if (opcao == 6) {
+                desfazerAdicao();
+            } else if (opcao == 7) {
+                mostrarUltimaAdicionada();
+            }
+        }
     }
 
-    static void exibirMenu() {
-        System.out.println("\n=== Gerenciador de Tarefas ===");
+    static void mostrarMenu() {
+        System.out.println();
         System.out.println("1 - Adicionar tarefa");
         System.out.println("2 - Listar tarefas");
-        System.out.println("3 - Buscar tarefa por título");
+        System.out.println("3 - Buscar tarefa");
         System.out.println("4 - Ordenar tarefas por título");
-        System.out.println("5 - Mudar status de uma tarefa");
-        System.out.println("6 - Desfazer última mudança de status");
-        System.out.println("7 - Ver última mudança (topo da pilha)");
+        System.out.println("5 - Concluir tarefa");
+        System.out.println("6 - Desfazer última tarefa adicionada");
+        System.out.println("7 - Ver última tarefa adicionada");
         System.out.println("0 - Sair");
     }
 
-    static void executar(int opcao) {
-        switch (opcao) {
-            case 1 -> adicionarTarefa();
-            case 2 -> listarTarefas();
-            case 3 -> buscarTarefa();
-            case 4 -> ordenarTarefas();
-            case 5 -> mudarStatus();
-            case 6 -> desfazer();
-            case 7 -> verTopo();
-            case 0 -> System.out.println("Até mais!");
-            default -> System.out.println("Opção inválida.");
-        }
-    }
-
     static void adicionarTarefa() {
-        if (quantidade == CAPACIDADE) {
+        if (quantidade == tarefas.length) {
             System.out.println("Lista cheia.");
             return;
         }
-        tarefas[quantidade] = new Tarefa(lerTexto("Título: "));
+        System.out.print("Título: ");
+        Tarefa tarefa = new Tarefa(teclado.nextLine());
+        tarefas[quantidade] = tarefa;
         quantidade++;
+        historico.empilhar(tarefa);
     }
 
-    // Percurso do array.
+    // Percorre o array.
     static void listarTarefas() {
-        if (quantidade == 0) {
-            System.out.println("Nenhuma tarefa.");
-        }
-        for (int indice = 0; indice < quantidade; indice++) {
-            System.out.println(indice + " - " + tarefas[indice]);
+        for (int i = 0; i < quantidade; i++) {
+            System.out.println(i + " - " + tarefas[i].getTitulo() + " (" + tarefas[i].getStatus() + ")");
         }
     }
 
-    // Busca linear.
+    // Busca sequencial.
     static void buscarTarefa() {
-        String titulo = lerTexto("Título: ");
-        for (int indice = 0; indice < quantidade; indice++) {
-            if (tarefas[indice].getTitulo().equalsIgnoreCase(titulo)) {
-                System.out.println("Encontrada na posição " + indice + ": " + tarefas[indice]);
+        System.out.print("Título: ");
+        String titulo = teclado.nextLine();
+        for (int i = 0; i < quantidade; i++) {
+            if (tarefas[i].getTitulo().equals(titulo)) {
+                System.out.println("Encontrada na posição " + i);
                 return;
             }
         }
         System.out.println("Não encontrada.");
     }
 
-    // Ordenação simples (bubble sort) por título.
+    // Ordenação bubble sort.
     static void ordenarTarefas() {
-        for (int passada = 0; passada < quantidade - 1; passada++) {
-            for (int indice = 0; indice < quantidade - 1 - passada; indice++) {
-                String atual = tarefas[indice].getTitulo();
-                String proximo = tarefas[indice + 1].getTitulo();
-                if (atual.compareToIgnoreCase(proximo) > 0) {
-                    Tarefa auxiliar = tarefas[indice];
-                    tarefas[indice] = tarefas[indice + 1];
-                    tarefas[indice + 1] = auxiliar;
+        for (int i = 0; i < quantidade - 1; i++) {
+            for (int j = 0; j < quantidade - 1 - i; j++) {
+                if (tarefas[j].getTitulo().compareTo(tarefas[j + 1].getTitulo()) > 0) {
+                    Tarefa auxiliar = tarefas[j];
+                    tarefas[j] = tarefas[j + 1];
+                    tarefas[j + 1] = auxiliar;
                 }
             }
         }
-        System.out.println("Tarefas ordenadas.");
     }
 
-    static void mudarStatus() {
+    static void concluirTarefa() {
         listarTarefas();
-        int indice = lerInteiro("Posição da tarefa: ");
-        if (indice < 0 || indice >= quantidade) {
+        System.out.print("Posição da tarefa: ");
+        int posicao = Integer.parseInt(teclado.nextLine());
+        if (posicao < 0 || posicao >= quantidade) {
             System.out.println("Posição inválida.");
             return;
         }
-        Status[] opcoes = Status.values();
-        for (int posicao = 0; posicao < opcoes.length; posicao++) {
-            System.out.println(posicao + " - " + opcoes[posicao]);
-        }
-        int escolhido = lerInteiro("Novo status: ");
-        if (escolhido < 0 || escolhido >= opcoes.length) {
-            System.out.println("Status inválido.");
-            return;
-        }
-        Tarefa tarefa = tarefas[indice];
-        if (!historico.empilhar(new Mudanca(tarefa, tarefa.getStatus()))) {
-            System.out.println("Histórico cheio.");
-            return;
-        }
-        tarefa.setStatus(opcoes[escolhido]);
-        System.out.println("Atualizada: " + tarefa);
+        tarefas[posicao].setStatus(Status.CONCLUIDA);
     }
 
-    static void desfazer() {
-        Mudanca mudanca = historico.desempilhar();
-        if (mudanca == null) {
+    // Desempilha a última tarefa adicionada e a remove do array.
+    static void desfazerAdicao() {
+        Tarefa tarefa = historico.desempilhar();
+        if (tarefa == null) {
             System.out.println("Nada para desfazer.");
             return;
         }
-        mudanca.tarefa().setStatus(mudanca.statusAnterior());
-        System.out.println("Desfeito: " + mudanca.tarefa());
+        int posicao = 0;
+        while (tarefas[posicao] != tarefa) {
+            posicao++;
+        }
+        for (int i = posicao; i < quantidade - 1; i++) {
+            tarefas[i] = tarefas[i + 1];
+        }
+        quantidade--;
+        tarefas[quantidade] = null;
+        System.out.println("Removida: " + tarefa.getTitulo());
     }
 
-    static void verTopo() {
-        Mudanca mudanca = historico.topo();
-        if (mudanca == null) {
-            System.out.println("Histórico vazio.");
+    static void mostrarUltimaAdicionada() {
+        Tarefa tarefa = historico.consultarTopo();
+        if (tarefa == null) {
+            System.out.println("Pilha vazia.");
             return;
         }
-        System.out.println("Última mudança: " + mudanca.tarefa().getTitulo()
-                + " (status anterior: " + mudanca.statusAnterior() + ")");
-    }
-
-    static String lerTexto(String mensagem) {
-        System.out.print(mensagem);
-        return teclado.nextLine().trim();
-    }
-
-    static int lerInteiro(String mensagem) {
-        try {
-            return Integer.parseInt(lerTexto(mensagem));
-        } catch (NumberFormatException erro) {
-            return -1;
-        }
+        System.out.println("Última adicionada: " + tarefa.getTitulo());
     }
 }
