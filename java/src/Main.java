@@ -16,7 +16,7 @@ public class Main {
         while (opcao != 0) {
             mostrarMenu();
             System.out.print("Escolha: ");
-            opcao = Integer.parseInt(teclado.nextLine());
+            opcao = lerNumero();
 
             if (opcao == 1) {
                 adicionarTarefa();
@@ -33,6 +33,15 @@ public class Main {
             } else if (opcao == 7) {
                 mostrarUltimaAdicionada();
             }
+        }
+    }
+
+    // Lê um número; se o usuário digitar outra coisa, devolve -1.
+    static int lerNumero() {
+        try {
+            return Integer.parseInt(teclado.nextLine());
+        } catch (NumberFormatException erro) {
+            return -1;
         }
     }
 
@@ -96,7 +105,7 @@ public class Main {
     static void concluirTarefa() {
         listarTarefas();
         System.out.print("Posição da tarefa: ");
-        int posicao = Integer.parseInt(teclado.nextLine());
+        int posicao = lerNumero();
         if (posicao < 0 || posicao >= quantidade) {
             System.out.println("Posição inválida.");
             return;
