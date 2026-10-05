@@ -1,7 +1,7 @@
 # Trabalho de Estrutura de Dados I - Gerenciador de Tarefas (N1)
 
 **Aluno:** Davi Machado
-**Disciplina:** Estrutura de Dados I — UNIALFA (ADS) — Prof. George Mendes Marra
+**Disciplina:** Estrutura de Dados I - UNIALFA (ADS) - Prof. George Mendes Marra
 **Tema:** Gerenciador de tarefas com pilha de desfazer (undo)
 
 ## Descrição
