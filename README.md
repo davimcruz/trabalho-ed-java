@@ -1,7 +1,6 @@
 # Trabalho de Estrutura de Dados I - Gerenciador de Tarefas (N1)
 
 **Aluno:** Davi Machado
-**Disciplina:** Estrutura de Dados I - UNIALFA (ADS) - Prof. George Mendes Marra
 **Tema:** Gerenciador de tarefas com pilha de desfazer (undo)
 
 ## Descrição
@@ -13,9 +12,9 @@ Cada tarefa adicionada é empilhada, permitindo desfazer a última adição.
 
 | Item | Onde |
 |------|------|
-| Array | `Main.java` — vetor `tarefas` com inserção, percurso, busca sequencial e ordenação (bubble sort) |
-| Enum | `modelos/Status.java` — `PENDENTE`, `EM_ANDAMENTO`, `CONCLUIDA` |
-| Pilha | `estruturas/Pilha.java` — implementação própria (array) com `empilhar`, `desempilhar` e `consultarTopo` |
-| Menu e métodos | `Main.java` — menu de console, um método por funcionalidade |
+| Array | `Main.java` —> vetor `tarefas` com inserção, percurso, busca sequencial e ordenação (bubble sort) |
+| Enum | `modelos/Status.java` —> `PENDENTE`, `EM_ANDAMENTO`, `CONCLUIDA` |
+| Pilha | `estruturas/Pilha.java` —> implementação própria (array) com `empilhar`, `desempilhar` e `consultarTopo` |
+| Menu e métodos | `Main.java` —> menu de console, um método por funcionalidade |
 
 
