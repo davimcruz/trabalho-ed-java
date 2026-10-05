@@ -1,7 +1,7 @@
-# Trabalho de Estrutura de Dados I — Gerenciador de Tarefas (N1)
+# Trabalho de Estrutura de Dados I - Gerenciador de Tarefas (N1)
 
 **Aluno:** Davi Machado
-**Disciplina:** Estrutura de Dados I — UniAlfa (ADS) — Prof. George Mendes Marra
+**Disciplina:** Estrutura de Dados I — UNIALFA (ADS) — Prof. George Mendes Marra
 **Tema:** Gerenciador de tarefas com pilha de desfazer (undo)
 
 ## Descrição
@@ -18,12 +18,4 @@ Cada mudança de status é empilhada, permitindo desfazer a última alteração.
 | Pilha | `estruturas/Pilha.java` — implementação própria (array) com `empilhar`, `desempilhar` e `topo` |
 | Menu e métodos | `Main.java` — menu de console, um método por funcionalidade |
 
-## Como executar
 
-```bash
-cd java
-javac -d out src/Main.java src/modelos/*.java src/estruturas/*.java
-java -cp out Main
-```
-
-Requer JDK 17 ou superior.
